@@ -1,0 +1,385 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CompetitionStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  FINALIZING
+  COMPLETED
+  CANCELLED
+}
+
+enum MarketSymbol {
+  BTC_PERP
+  ETH_PERP
+  SOL_PERP
+}
+
+enum TradeSide {
+  LONG
+  SHORT
+}
+
+enum TradeExitReason {
+  TARGET
+  STOP
+  LIQUIDATION
+  MANUAL
+  EXPIRED
+  SYSTEM
+}
+
+enum Division {
+  OPEN
+  PROVISIONAL
+  RISK_LAB
+}
+
+enum ParticipantArchetype {
+  DISCIPLINED_LOW_RISK
+  CONSISTENT_MEDIUM_RISK
+  HIGH_LEVERAGE_GAMBLER
+  WHALE
+  SMALL_ACCOUNT_HIGH_ROI
+  VOLUME_FARMER
+  ONE_TRADE_WONDER
+  DIVERSIFIED_TRADER
+  INACTIVE_TRADER
+  LATE_COMPETITION_SPRINTER
+  REPETITIVE_SIZE_TRADER
+  FREQUENTLY_LIQUIDATED
+}
+
+enum IntegrityFlagType {
+  VOLUME_ANOMALY
+  DRAWDOWN_ANOMALY
+  CORRELATED_TRADING
+  WASH_TRADING_HEURISTIC
+  DATA_QUALITY
+  MANUAL_REVIEW
+  REPETITIVE_INSTANT_ROUND_TRIPS
+  HIGH_TRADE_FREQUENCY
+  EXCESSIVE_AVERAGE_LEVERAGE
+  EXCESSIVE_MAX_LEVERAGE
+  ONE_TRADE_SCORE_DOMINATION
+  TINY_ACCOUNT_ROI_DISTORTION
+  EXTREME_MARKET_CONCENTRATION
+  FINAL_HOUR_ACTIVITY
+  REPEATED_NEAR_IDENTICAL_SIZES
+  EXCESSIVE_LIQUIDATION_RATE
+  POSSIBLE_VOLUME_FARMING
+  VERY_LOW_AVERAGE_DURATION
+  ECONOMICALLY_NEGLIGIBLE_TRADES
+  ABRUPT_FINAL_BEHAVIOR_SHIFT
+}
+
+enum IntegritySeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IntegrityStatus {
+  OPEN
+  REVIEWING
+  DISMISSED
+  CONFIRMED
+}
+
+enum QuestType {
+  PARTICIPATION
+  RISK_MANAGEMENT
+  CONSISTENCY
+  EDUCATION
+}
+
+enum QuestStatus {
+  LOCKED
+  ACTIVE
+  COMPLETED
+  EXPIRED
+}
+
+enum AchievementType {
+  CONSISTENCY
+  RISK_CONTROL
+  RECOVERY
+  PARTICIPATION
+}
+
+model Competition {
+  id            String                    @id @default(cuid())
+  slug          String                    @unique
+  name          String
+  description   String?
+  status        CompetitionStatus         @default(DRAFT)
+  startsAt      DateTime
+  endsAt        DateTime
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+  configuration CompetitionConfiguration?
+  markets       CompetitionMarket[]
+  participants  Participant[]
+  quests        Quest[]
+  snapshots     LeaderboardSnapshot[]
+
+  @@index([status, startsAt])
+  @@index([endsAt])
+}
+
+model CompetitionMarket {
+  id            String       @id @default(cuid())
+  competitionId String
+  symbol        MarketSymbol
+  displayName   String
+  enabled       Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  competition   Competition  @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  trades        Trade[]
+
+  @@unique([competitionId, symbol])
+  @@index([symbol])
+}
+
+model CompetitionConfiguration {
+  id                     String      @id @default(cuid())
+  competitionId          String      @unique
+  startingEquity         Decimal     @db.Decimal(20, 8)
+  maxLeverage            Decimal     @db.Decimal(10, 4)
+  minimumQualifiedTrades Int         @default(0)
+  minimumSimulatedVolume Decimal     @default(0) @db.Decimal(24, 8)
+  scoringVersion         String
+  riskWeight             Decimal     @db.Decimal(10, 6)
+  consistencyWeight      Decimal     @db.Decimal(10, 6)
+  pnlWeight              Decimal     @db.Decimal(10, 6)
+  volumeWeight           Decimal     @db.Decimal(10, 6)
+  integrityPenaltyWeight Decimal     @db.Decimal(10, 6)
+  scoreComponentCaps     Json
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+  competition            Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+}
+
+model Participant {
+  id                  String                     @id @default(cuid())
+  competitionId       String
+  wallet              String
+  displayName         String?
+  division            Division                   @default(OPEN)
+  archetype           ParticipantArchetype?
+  startingEquity      Decimal                    @db.Decimal(20, 8)
+  currentEquity       Decimal                    @db.Decimal(20, 8)
+  maximumDrawdown     Decimal                    @default(0) @db.Decimal(20, 8)
+  qualifiedTradeCount Int                        @default(0)
+  simulatedVolume     Decimal                    @default(0) @db.Decimal(24, 8)
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+  competition         Competition                @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  trades              Trade[]
+  dailyPerformances   DailyPerformance[]
+  scoreBreakdowns     ScoreBreakdown[]
+  leaderboardEntries  LeaderboardSnapshotEntry[]
+  questProgress       QuestProgress[]
+  streaks             Streak[]
+  achievements        ParticipantAchievement[]
+  integrityFlags      IntegrityFlag[]
+
+  @@unique([competitionId, wallet])
+  @@index([competitionId, division])
+  @@index([wallet])
+}
+
+model Trade {
+  id                  String            @id @default(cuid())
+  participantId       String
+  competitionMarketId String
+  side                TradeSide
+  openedAt            DateTime
+  closedAt            DateTime?
+  entryPrice          Decimal           @db.Decimal(24, 10)
+  exitPrice           Decimal?          @db.Decimal(24, 10)
+  size                Decimal           @db.Decimal(24, 8)
+  leverage            Decimal           @db.Decimal(10, 4)
+  simulatedVolume     Decimal           @db.Decimal(24, 8)
+  simulatedPnl        Decimal?          @db.Decimal(24, 8)
+  fees                Decimal           @default(0) @db.Decimal(24, 8)
+  isQualified         Boolean           @default(false)
+  exitReason          TradeExitReason?
+  malformedReason     String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  participant         Participant       @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  market              CompetitionMarket @relation(fields: [competitionMarketId], references: [id], onDelete: Restrict)
+
+  @@index([participantId, openedAt])
+  @@index([competitionMarketId, openedAt])
+  @@index([isQualified])
+}
+
+model DailyPerformance {
+  id              String      @id @default(cuid())
+  participantId   String
+  day             DateTime
+  startingEquity  Decimal     @db.Decimal(20, 8)
+  endingEquity    Decimal     @db.Decimal(20, 8)
+  simulatedPnl    Decimal     @db.Decimal(24, 8)
+  simulatedVolume Decimal     @db.Decimal(24, 8)
+  maximumDrawdown Decimal     @db.Decimal(20, 8)
+  qualifiedTrades Int         @default(0)
+  createdAt       DateTime    @default(now())
+  participant     Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([participantId, day])
+  @@index([day])
+}
+
+model ScoreBreakdown {
+  id                   String      @id @default(cuid())
+  participantId        String
+  calculatedAt         DateTime    @default(now())
+  scoringVersion       String
+  competitionScore     Decimal     @db.Decimal(18, 8)
+  pnlComponent         Decimal     @db.Decimal(18, 8)
+  riskComponent        Decimal     @db.Decimal(18, 8)
+  consistencyComponent Decimal     @db.Decimal(18, 8)
+  volumeComponent      Decimal     @db.Decimal(18, 8)
+  integrityPenalty     Decimal     @default(0) @db.Decimal(18, 8)
+  componentDetails     Json?
+  participant          Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@index([participantId, calculatedAt])
+  @@index([competitionScore])
+}
+
+model LeaderboardSnapshot {
+  id            String                     @id @default(cuid())
+  competitionId String
+  capturedAt    DateTime                   @default(now())
+  label         String?
+  createdAt     DateTime                   @default(now())
+  competition   Competition                @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  entries       LeaderboardSnapshotEntry[]
+
+  @@index([competitionId, capturedAt])
+}
+
+model LeaderboardSnapshotEntry {
+  id               String              @id @default(cuid())
+  snapshotId       String
+  participantId    String
+  rank             Int
+  competitionScore Decimal             @db.Decimal(18, 8)
+  currentEquity    Decimal             @db.Decimal(20, 8)
+  simulatedPnl     Decimal             @db.Decimal(24, 8)
+  simulatedVolume  Decimal             @db.Decimal(24, 8)
+  maximumDrawdown  Decimal             @db.Decimal(20, 8)
+  division         Division
+  snapshot         LeaderboardSnapshot @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  participant      Participant         @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([snapshotId, rank])
+  @@unique([snapshotId, participantId])
+  @@index([participantId])
+}
+
+model Quest {
+  id            String          @id @default(cuid())
+  competitionId String
+  slug          String
+  title         String
+  description   String
+  type          QuestType
+  status        QuestStatus     @default(LOCKED)
+  startsAt      DateTime?
+  endsAt        DateTime?
+  requirements  Json
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  competition   Competition     @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  progress      QuestProgress[]
+
+  @@unique([competitionId, slug])
+  @@index([competitionId, status])
+}
+
+model QuestProgress {
+  id            String      @id @default(cuid())
+  questId       String
+  participantId String
+  status        QuestStatus @default(ACTIVE)
+  progressValue Decimal     @default(0) @db.Decimal(18, 8)
+  completedAt   DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  quest         Quest       @relation(fields: [questId], references: [id], onDelete: Cascade)
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([questId, participantId])
+  @@index([participantId, status])
+}
+
+model Streak {
+  id            String          @id @default(cuid())
+  participantId String
+  type          AchievementType
+  currentCount  Int             @default(0)
+  bestCount     Int             @default(0)
+  lastCountedAt DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  participant   Participant     @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([participantId, type])
+}
+
+model Achievement {
+  id           String                   @id @default(cuid())
+  slug         String                   @unique
+  title        String
+  description  String
+  type         AchievementType
+  criteria     Json
+  createdAt    DateTime                 @default(now())
+  participants ParticipantAchievement[]
+
+  @@index([type])
+}
+
+model ParticipantAchievement {
+  id            String      @id @default(cuid())
+  participantId String
+  achievementId String
+  awardedAt     DateTime    @default(now())
+  metadata      Json?
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([participantId, achievementId])
+  @@index([achievementId])
+}
+
+model IntegrityFlag {
+  id            String            @id @default(cuid())
+  participantId String
+  type          IntegrityFlagType
+  severity      IntegritySeverity
+  status        IntegrityStatus   @default(OPEN)
+  reason        String
+  evidence      Json?
+  reviewedAt    DateTime?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  participant   Participant       @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@index([participantId, status])
+  @@index([severity, status])
+  @@index([type])
+}

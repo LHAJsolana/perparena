@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --color-bg: 6 10 18;
+  --color-bg-elevated: 10 16 28;
+  --color-surface: 13 21 35;
+  --color-surface-raised: 18 29 46;
+  --color-border: 45 61 82;
+  --color-border-strong: 77 96 122;
+  --color-text: 235 241 248;
+  --color-text-muted: 156 171 190;
+  --color-text-subtle: 104 121 143;
+  --color-positive: 52 211 153;
+  --color-negative: 251 113 133;
+  --color-warning: 251 191 36;
+  --color-info: 96 165 250;
+  --color-accent: 45 212 191;
+  --color-accent-strong: 20 184 166;
+  --space-container: clamp(1rem, 3vw, 2rem);
+  --radius-xs: 0.1875rem;
+  --radius-sm: 0.3125rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --shadow-panel: 0 14px 40px rgb(0 0 0 / 0.22);
+  --shadow-glow:
+    0 0 0 1px rgb(45 212 191 / 0.18), 0 16px 44px rgb(0 0 0 / 0.28);
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: rgb(var(--color-bg));
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background:
+    linear-gradient(rgb(45 61 82 / 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(45 61 82 / 0.12) 1px, transparent 1px),
+    radial-gradient(
+      circle at 15% -10%,
+      rgb(45 212 191 / 0.13),
+      transparent 30rem
+    ),
+    rgb(var(--color-bg));
+  background-size:
+    44px 44px,
+    44px 44px,
+    auto;
+  color: rgb(var(--color-text));
+  font-family: var(--font-sans);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid rgb(var(--color-accent));
+  outline-offset: 3px;
+}
+
+::selection {
+  background: rgb(var(--color-accent) / 0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
