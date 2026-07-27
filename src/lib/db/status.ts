@@ -19,7 +19,7 @@ export async function getDatabaseStatus(): Promise<DatabaseStatus> {
   }
 
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    await queryDatabaseWithRetry();
 
     return { state: "connected", connected: true };
   } catch (error) {
@@ -37,4 +37,23 @@ export async function getDatabaseStatus(): Promise<DatabaseStatus> {
       reason: "PostgreSQL connectivity check failed",
     };
   }
+}
+
+async function queryDatabaseWithRetry(attempts = 4) {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      return;
+    } catch (error) {
+      lastError = error;
+
+      if (attempt < attempts) {
+        await new Promise((resolve) => setTimeout(resolve, 1_000));
+      }
+    }
+  }
+
+  throw lastError;
 }

@@ -8,14 +8,29 @@ import type { SimulationSummary } from "@/features/simulation/types";
 
 export async function seedSimulation(
   prisma: PrismaClient,
+  options: { resetExisting?: boolean } = {},
 ): Promise<SimulationSummary> {
   const dataset = generateSimulation();
+  const resetExisting = options.resetExisting ?? true;
 
   return prisma.$transaction(
     async (tx) => {
-      await tx.competition.deleteMany({
-        where: { slug: SIMULATION_COMPETITION.slug },
-      });
+      if (resetExisting) {
+        await tx.competition.deleteMany({
+          where: { slug: SIMULATION_COMPETITION.slug },
+        });
+      } else {
+        const existing = await tx.competition.findUnique({
+          select: { id: true },
+          where: { slug: SIMULATION_COMPETITION.slug },
+        });
+
+        if (existing) {
+          throw new Error(
+            "Seed competition already exists; production seed refuses to overwrite data.",
+          );
+        }
+      }
 
       await tx.competition.create({
         data: {

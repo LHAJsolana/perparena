@@ -61,38 +61,43 @@ export async function recalculateCompetitionIntegrity(
     });
   });
 
-  await prisma.$transaction(async (tx) => {
-    await tx.integrityFlag.deleteMany({
-      where: {
-        participantId: { in: competition.participants.map((item) => item.id) },
-      },
-    });
-
-    for (const assessment of assessments) {
-      if (assessment.flags.length === 0) {
-        continue;
-      }
-
-      await tx.integrityFlag.createMany({
-        data: assessment.flags.map((flag) => ({
-          id: flag.id,
-          participantId: flag.participantId,
-          type: flag.type,
-          severity: flag.severity,
-          status: flag.reviewStatus,
-          reason: flag.explanation,
-          evidence: {
-            ...flag.evidence,
-            observedValue: flag.observedValue,
-            threshold: flag.threshold,
-            detectedAt: flag.detectedAt.toISOString(),
-            affectsScoring: flag.affectsScoring,
-            impact: flag.impact,
+  await prisma.$transaction(
+    async (tx) => {
+      await tx.integrityFlag.deleteMany({
+        where: {
+          participantId: {
+            in: competition.participants.map((item) => item.id),
           },
-        })),
+        },
       });
-    }
-  });
+
+      for (const assessment of assessments) {
+        if (assessment.flags.length === 0) {
+          continue;
+        }
+
+        await tx.integrityFlag.createMany({
+          data: assessment.flags.map((flag) => ({
+            id: flag.id,
+            participantId: flag.participantId,
+            type: flag.type,
+            severity: flag.severity,
+            status: flag.reviewStatus,
+            reason: flag.explanation,
+            evidence: {
+              ...flag.evidence,
+              observedValue: flag.observedValue,
+              threshold: flag.threshold,
+              detectedAt: flag.detectedAt.toISOString(),
+              affectsScoring: flag.affectsScoring,
+              impact: flag.impact,
+            },
+          })),
+        });
+      }
+    },
+    { timeout: 30000 },
+  );
 
   return summarizeIntegrityAssessments(assessments, slug);
 }

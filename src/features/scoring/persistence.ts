@@ -76,31 +76,34 @@ export async function recalculateCompetitionScores(
   });
   const scores = scoreCompetitionParticipants(scoreInputs);
 
-  await prisma.$transaction(async (tx) => {
-    await tx.scoreBreakdown.deleteMany({
-      where: {
-        participantId: {
-          in: competition.participants.map((participant) => participant.id),
+  await prisma.$transaction(
+    async (tx) => {
+      await tx.scoreBreakdown.deleteMany({
+        where: {
+          participantId: {
+            in: competition.participants.map((participant) => participant.id),
+          },
+          scoringVersion: SCORING_VERSION,
         },
-        scoringVersion: SCORING_VERSION,
-      },
-    });
+      });
 
-    await tx.scoreBreakdown.createMany({
-      data: scores.map((score) => ({
-        id: `score_${SCORING_VERSION}_${score.participantId}`,
-        participantId: score.participantId,
-        scoringVersion: SCORING_VERSION,
-        competitionScore: decimal(score.finalTotal),
-        pnlComponent: decimal(score.components.performance.score),
-        riskComponent: decimal(score.components.riskManagement.score),
-        consistencyComponent: decimal(score.components.consistency.score),
-        volumeComponent: decimal(score.components.qualifiedActivity.score),
-        integrityPenalty: decimal(score.rawTotal - score.finalTotal),
-        componentDetails: scoreToJson(score),
-      })),
-    });
-  });
+      await tx.scoreBreakdown.createMany({
+        data: scores.map((score) => ({
+          id: `score_${SCORING_VERSION}_${score.participantId}`,
+          participantId: score.participantId,
+          scoringVersion: SCORING_VERSION,
+          competitionScore: decimal(score.finalTotal),
+          pnlComponent: decimal(score.components.performance.score),
+          riskComponent: decimal(score.components.riskManagement.score),
+          consistencyComponent: decimal(score.components.consistency.score),
+          volumeComponent: decimal(score.components.qualifiedActivity.score),
+          integrityPenalty: decimal(score.rawTotal - score.finalTotal),
+          componentDetails: scoreToJson(score),
+        })),
+      });
+    },
+    { timeout: 30000 },
+  );
 
   return summarizeScores(scores);
 }

@@ -1,12 +1,16 @@
 import { seedSimulation } from "@/features/simulation/persistence";
+import {
+  assertSimulationSeedAllowed,
+  shouldResetExistingSeedData,
+} from "@/features/simulation/seed-safety";
 import { prisma } from "@/lib/db/prisma";
 
 async function main() {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("db:seed refuses to run when NODE_ENV=production.");
-  }
+  assertSimulationSeedAllowed();
 
-  const summary = await seedSimulation(prisma);
+  const summary = await seedSimulation(prisma, {
+    resetExisting: shouldResetExistingSeedData(),
+  });
 
   console.log(JSON.stringify(summary, null, 2));
 }

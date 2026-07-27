@@ -10,7 +10,7 @@ import { Panel } from "@/components/ui/panel";
 import { Select } from "@/components/ui/select";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { TableWrapper } from "@/components/ui/table-wrapper";
-import { truncateWallet, WalletDisplay } from "@/components/ui/wallet-display";
+import { WalletDisplay } from "@/components/ui/wallet-display";
 import {
   formatCompactCurrency,
   formatCurrency,
@@ -442,7 +442,15 @@ function WalletProfileLink({ wallet }: { wallet: string }) {
       href={`/traders/${wallet}`}
       title={wallet}
     >
-      {truncateWallet(wallet)}
+      {formatWalletLabel(wallet)}
     </Link>
   );
+}
+
+function formatWalletLabel(wallet: string) {
+  if (wallet.length <= 14) {
+    return wallet;
+  }
+
+  return `${wallet.slice(0, 6)}...${wallet.slice(-6)}`;
 }

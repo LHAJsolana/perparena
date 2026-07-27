@@ -40,70 +40,73 @@ export async function recalculateCompetitionAnalytics(
   }[] = [];
   let dailyPerformanceRows = 0;
 
-  await prisma.$transaction(async (tx) => {
-    for (const participant of competition.participants) {
-      const analytics = calculateParticipantAnalytics({
-        startingEquity: participant.startingEquity.toNumber(),
-        startsAt: competition.startsAt,
-        endsAt: competition.endsAt,
-        trades: participant.trades.map((trade) => ({
-          id: trade.id,
-          marketSymbol: trade.market.symbol,
-          side: trade.side,
-          openedAt: trade.openedAt,
-          closedAt: trade.closedAt,
-          size: trade.size.toNumber(),
-          leverage: trade.leverage.toNumber(),
-          simulatedVolume: trade.simulatedVolume.toNumber(),
-          simulatedPnl: trade.simulatedPnl?.toNumber() ?? null,
-          fees: trade.fees.toNumber(),
-          exitReason: trade.exitReason,
-        })),
-      });
-
-      await tx.participant.update({
-        where: { id: participant.id },
-        data: {
-          currentEquity: decimal(analytics.currentEquity),
-          maximumDrawdown: decimal(analytics.maximumDrawdown),
-          qualifiedTradeCount: analytics.qualifiedTradeCount,
-          simulatedVolume: decimal(
-            Object.values(analytics.dailyPerformance).reduce(
-              (total, day) => total + day.simulatedVolume,
-              0,
-            ),
-          ),
-        },
-      });
-
-      await tx.dailyPerformance.deleteMany({
-        where: { participantId: participant.id },
-      });
-
-      if (analytics.dailyPerformance.length > 0) {
-        await tx.dailyPerformance.createMany({
-          data: analytics.dailyPerformance.map((day) => ({
-            id: `analytics_${participant.id}_${day.day.toISOString().slice(0, 10)}`,
-            participantId: participant.id,
-            day: day.day,
-            startingEquity: decimal(day.startingEquity),
-            endingEquity: decimal(day.endingEquity),
-            simulatedPnl: decimal(day.simulatedPnl),
-            simulatedVolume: decimal(day.simulatedVolume),
-            maximumDrawdown: decimal(day.maximumDrawdown),
-            qualifiedTrades: day.qualifiedTrades,
+  await prisma.$transaction(
+    async (tx) => {
+      for (const participant of competition.participants) {
+        const analytics = calculateParticipantAnalytics({
+          startingEquity: participant.startingEquity.toNumber(),
+          startsAt: competition.startsAt,
+          endsAt: competition.endsAt,
+          trades: participant.trades.map((trade) => ({
+            id: trade.id,
+            marketSymbol: trade.market.symbol,
+            side: trade.side,
+            openedAt: trade.openedAt,
+            closedAt: trade.closedAt,
+            size: trade.size.toNumber(),
+            leverage: trade.leverage.toNumber(),
+            simulatedVolume: trade.simulatedVolume.toNumber(),
+            simulatedPnl: trade.simulatedPnl?.toNumber() ?? null,
+            fees: trade.fees.toNumber(),
+            exitReason: trade.exitReason,
           })),
         });
-      }
 
-      dailyPerformanceRows += analytics.dailyPerformance.length;
-      summaries.push({
-        netPnl: analytics.netPnl,
-        roi: analytics.roi,
-        maximumDrawdown: analytics.maximumDrawdown,
-      });
-    }
-  });
+        await tx.participant.update({
+          where: { id: participant.id },
+          data: {
+            currentEquity: decimal(analytics.currentEquity),
+            maximumDrawdown: decimal(analytics.maximumDrawdown),
+            qualifiedTradeCount: analytics.qualifiedTradeCount,
+            simulatedVolume: decimal(
+              Object.values(analytics.dailyPerformance).reduce(
+                (total, day) => total + day.simulatedVolume,
+                0,
+              ),
+            ),
+          },
+        });
+
+        await tx.dailyPerformance.deleteMany({
+          where: { participantId: participant.id },
+        });
+
+        if (analytics.dailyPerformance.length > 0) {
+          await tx.dailyPerformance.createMany({
+            data: analytics.dailyPerformance.map((day) => ({
+              id: `analytics_${participant.id}_${day.day.toISOString().slice(0, 10)}`,
+              participantId: participant.id,
+              day: day.day,
+              startingEquity: decimal(day.startingEquity),
+              endingEquity: decimal(day.endingEquity),
+              simulatedPnl: decimal(day.simulatedPnl),
+              simulatedVolume: decimal(day.simulatedVolume),
+              maximumDrawdown: decimal(day.maximumDrawdown),
+              qualifiedTrades: day.qualifiedTrades,
+            })),
+          });
+        }
+
+        dailyPerformanceRows += analytics.dailyPerformance.length;
+        summaries.push({
+          netPnl: analytics.netPnl,
+          roi: analytics.roi,
+          maximumDrawdown: analytics.maximumDrawdown,
+        });
+      }
+    },
+    { timeout: 30000 },
+  );
 
   const roiValues = summaries
     .map((summary) => summary.roi)

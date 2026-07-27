@@ -31,6 +31,9 @@ export function TraderProfileView({ profile }: { profile: TraderProfile }) {
               <DivisionBadge division={profile.division} />
               <IntegrityStatusBadge status={profile.integrity.status} />
             </div>
+            <h1 className="text-2xl font-semibold text-foreground">
+              Synthetic participant profile
+            </h1>
             <WalletDisplay wallet={profile.wallet} />
             <p className="text-sm leading-6 text-muted">
               Rank {profile.rank ?? "n/a"} in{" "}

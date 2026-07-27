@@ -1,12 +1,9 @@
 import { prisma } from "@/lib/db/prisma";
 import { SIMULATION_COMPETITION } from "@/features/simulation/constants";
+import { assertSimulationResetAllowed } from "@/features/simulation/reset-safety";
 
 async function main() {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error(
-      "simulation:reset refuses to run when NODE_ENV=production.",
-    );
-  }
+  assertSimulationResetAllowed();
 
   const result = await prisma.$transaction(async (tx) =>
     tx.competition.deleteMany({
