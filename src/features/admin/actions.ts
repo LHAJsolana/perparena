@@ -215,7 +215,17 @@ function stringValue(formData: FormData, key: string) {
 
 function actionError(error: unknown): AdminActionState {
   if (error instanceof Error) {
-    return { message: error.message, ok: false };
+    if (error.message.includes("disabled")) {
+      return { message: error.message, ok: false };
+    }
+
+    if (error.message.includes("not found")) {
+      return { message: error.message, ok: false };
+    }
+
+    if (error.name === "ZodError") {
+      return { message: "Admin validation failed.", ok: false };
+    }
   }
 
   return { message: "Admin action failed.", ok: false };

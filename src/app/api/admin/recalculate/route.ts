@@ -3,6 +3,7 @@ import {
   recalculationRequestSchema,
   runDemoRecalculationService,
 } from "@/features/recalculation/server/service";
+import { isAdminApiRequestAuthorized } from "@/features/admin/protection";
 import { noStoreHeaders } from "@/lib/api/cache";
 import { apiError, apiOk, apiUnhandledError } from "@/lib/api/responses";
 
@@ -10,6 +11,10 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
+    if (!isAdminApiRequestAuthorized(request.headers)) {
+      return apiError("FORBIDDEN", "Admin API authorization failed.", 403);
+    }
+
     const body = await request.json().catch(() => null);
     const parsed = recalculationRequestSchema.safeParse(body);
 

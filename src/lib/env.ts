@@ -13,7 +13,6 @@ const envSchema = z.object({
     )
     .optional(),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
-  SIMULATION_SEED: z.string().min(1).default("perparena-season-01"),
 });
 
 export type AppEnv = z.infer<typeof envSchema>;
@@ -28,9 +27,12 @@ export function getDatabaseUrlStatus(
   env: Record<string, string | undefined> = process.env,
 ) {
   const parsed = envSchema.pick({ DATABASE_URL: true }).safeParse(env);
+  const configured = Boolean(parsed.success && parsed.data.DATABASE_URL);
+  const requiredButMissing = env.NODE_ENV === "production" && !configured;
 
   return {
-    configured: Boolean(parsed.success && parsed.data.DATABASE_URL),
-    valid: parsed.success,
+    configured,
+    required: env.NODE_ENV === "production",
+    valid: parsed.success && !requiredButMissing,
   };
 }

@@ -8,8 +8,12 @@ export const appConfig = {
   publicUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
   supportedMarkets: ["BTC-PERP", "ETH-PERP", "SOL-PERP"] as const,
   globalDisclaimer,
-  repositoryUrl: "https://github.com/example/perparena",
-  socialUrl: "https://example.com/perparena",
+  repositoryUrl: "https://github.com/LHAJsolana/perparena",
+  socialUrl: "https://github.com/LHAJsolana/perparena",
+  limitationsNotice:
+    "PerpArena is a portfolio prototype. Its scoring, analytics, integrity heuristics, admin controls, and synthetic exports are demonstrations and are not professional legal, financial, compliance, or security advice.",
+  methodologyNotice:
+    "Competition score methodology is deterministic and documented for review, but it remains a prototype model that would require calibration before any real-world use.",
 } as const;
 
 export const appNavigation = [

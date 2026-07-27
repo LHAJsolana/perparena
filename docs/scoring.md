@@ -66,11 +66,13 @@ This rewards meaningful multi-market activity without forcing equal allocation o
 
 ## Integrity Adjustment
 
-Phase 6 supports an optional integrity multiplier interface. The default is neutral:
+The scoring model supports an integrity multiplier supplied by the integrity
+engine. Clean or informational signals keep the multiplier neutral. Multiple
+review-worthy or score-adjusting signals can reduce the final score through the
+documented cap in `docs/integrity.md`.
 
-`{ multiplier: 1, reason: "Neutral placeholder until Phase 7 integrity engine." }`
-
-Raw score and adjusted final score are kept separate. Phase 6 does not implement speculative integrity penalties.
+Raw score and adjusted final score are kept separate so the integrity effect can
+be inspected without hiding the underlying component results.
 
 ## Severe-Risk Penalty
 

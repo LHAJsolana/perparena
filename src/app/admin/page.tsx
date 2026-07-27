@@ -4,6 +4,7 @@ import { MetricCard } from "@/components/ui/metric-card";
 import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { SimulationDisclaimer } from "@/components/ui/simulation-disclaimer";
 import { AdminNotice } from "@/features/admin/components";
 import { getAdminMutationMode } from "@/features/admin/protection";
 import {
@@ -28,6 +29,9 @@ export default async function AdminPage() {
         description="Safe portfolio admin surface for competition configuration, synthetic exports, and integrity heuristic review."
       />
       <AdminNotice mode={mode} />
+      <Panel>
+        <SimulationDisclaimer />
+      </Panel>
 
       {competitions.status === "unavailable" ? (
         <ErrorMessage

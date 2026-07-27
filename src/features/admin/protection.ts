@@ -23,3 +23,16 @@ export function assertAdminMutationAllowed(env = process.env) {
     throw new Error(mode.reason);
   }
 }
+
+export function isAdminApiRequestAuthorized(
+  headers: Headers,
+  env: Record<string, string | undefined> = process.env,
+) {
+  const configuredToken = env.PERPARENA_ADMIN_TOKEN;
+
+  if (!configuredToken) {
+    return true;
+  }
+
+  return headers.get("x-perparena-admin-token") === configuredToken;
+}

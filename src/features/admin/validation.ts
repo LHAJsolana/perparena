@@ -8,6 +8,12 @@ import {
 import { z } from "zod";
 
 const numberField = z.coerce.number().finite().nonnegative();
+const publicReviewNote = z
+  .string()
+  .trim()
+  .max(500)
+  .transform((value) => value.replace(/[\u0000-\u001f\u007f]/g, ""))
+  .optional();
 
 export const scoringWeightsSchema = z
   .object({
@@ -89,7 +95,7 @@ export const statusChangeSchema = z
 
 export const integrityReviewSchema = z.object({
   flagId: z.string().min(1),
-  note: z.string().trim().max(500).optional(),
+  note: publicReviewNote,
   status: z.enum([
     IntegrityStatus.REVIEWING,
     IntegrityStatus.DISMISSED,

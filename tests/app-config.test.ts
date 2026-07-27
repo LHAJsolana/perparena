@@ -19,6 +19,5 @@ describe("application configuration", () => {
     const parsed = parseEnv({});
 
     expect(parsed.NEXT_PUBLIC_APP_URL).toBe("http://localhost:3000");
-    expect(parsed.SIMULATION_SEED).toBe("perparena-season-01");
   });
 });

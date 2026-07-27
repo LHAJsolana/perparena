@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/ui/page-header";
 import { Panel } from "@/components/ui/panel";
 import { SimulationDisclaimer } from "@/components/ui/simulation-disclaimer";
+import { appConfig } from "@/lib/config/app-config";
 
 export default function AboutPage() {
   return (
@@ -12,6 +13,17 @@ export default function AboutPage() {
       />
       <Panel>
         <SimulationDisclaimer />
+      </Panel>
+      <Panel>
+        <h2 className="text-lg font-semibold text-foreground">
+          Limitations and methodology
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-muted">
+          {appConfig.limitationsNotice}
+        </p>
+        <p className="mt-3 text-sm leading-6 text-muted">
+          {appConfig.methodologyNotice}
+        </p>
       </Panel>
     </div>
   );

@@ -8,12 +8,12 @@ type ErrorPageProps = {
   reset: () => void;
 };
 
-export default function ErrorPage({ error, reset }: ErrorPageProps) {
+export default function ErrorPage({ reset }: ErrorPageProps) {
   return (
     <div className="space-y-4">
       <ErrorMessage
         title="Something went wrong"
-        message={error.message || "The application shell could not render."}
+        message="The application shell could not render. No sensitive diagnostic details are shown in the browser."
       />
       <Button type="button" onClick={reset}>
         Try again
