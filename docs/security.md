@@ -10,6 +10,9 @@ custodian, or financial service.
 - `NEXT_PUBLIC_APP_URL` is the only public URL-like variable.
 - `.env` and `.env*.local` are ignored by Git.
 - `.env.example` contains placeholders only.
+- Production is deployed on Vercel with `DATABASE_URL` stored as an encrypted
+  server-side variable and `NEXT_PUBLIC_APP_URL` set to
+  `https://perparena.vercel.app`.
 
 ## Admin Safety
 
@@ -62,3 +65,7 @@ rendering raw exception messages.
 - The CSP allows inline styles/scripts needed by the current Next.js prototype.
 - Admin controls are safe for portfolio demonstration, not production
   operations.
+- `npm audit --audit-level=high` reports remaining transitive
+  ESLint/minimatch/brace-expansion and Next.js/PostCSS advisories. The available
+  automated fixes require breaking ecosystem changes; no critical advisories
+  remain.

@@ -41,3 +41,5 @@ Target length: 60-90 seconds.
 ## 10. Closing CTA
 
 "PerpArena is a portfolio case study in risk analytics, simulation, and honest product design. Review the repository for the architecture, tests, methodology, and limitations."
+
+"The public demo is available at perparena.vercel.app."

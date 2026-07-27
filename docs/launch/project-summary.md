@@ -4,6 +4,8 @@
 
 PerpArena is an independent simulated, risk-adjusted trading competition and analytics prototype that rewards consistency, risk management, and transparent scoring over raw account size or one lucky trade.
 
+Public demo: `https://perparena.vercel.app`
+
 ## 50-Word Description
 
 PerpArena is a full-stack portfolio project for simulated perpetual-futures-style competitions. It generates deterministic synthetic participants and trades, calculates transparent analytics, ranks traders with a 0-100 risk-adjusted scoring model, surfaces explainable integrity heuristics, and presents public leaderboards, trader profiles, quests, and a safe demonstration admin center for technical evaluation and presentation.

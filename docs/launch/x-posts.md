@@ -10,6 +10,8 @@ It uses synthetic participants/trades, risk-adjusted scoring, analytics, integri
 
 No real trades. No custody. No rewards. Just a portfolio build exploring better leaderboard design.
 
+Demo: https://perparena.vercel.app
+
 ## Detailed Launch Post
 
 I built PerpArena, an independent simulated trading competition and analytics prototype.
@@ -29,6 +31,8 @@ Those metrics feed a transparent 0-100 competition score:
 It also includes explainable integrity heuristics, trader profile pages, charts, quests, achievements, API boundaries, tests, and a safe demo admin area.
 
 Important: this is not a real exchange. It does not execute trades, custody funds, give financial advice, or distribute rewards. The competition and data are synthetic.
+
+Demo: https://perparena.vercel.app
 
 ## Five-Post Technical Thread
 

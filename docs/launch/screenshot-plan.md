@@ -1,6 +1,7 @@
 # Screenshot Plan
 
-Capture screenshots only from a verified seeded local environment or verified public deployment.
+Screenshots were captured from the verified public deployment at
+`https://perparena.vercel.app` on 2026-07-27.
 
 ## Hero
 
@@ -9,6 +10,7 @@ Capture screenshots only from a verified seeded local environment or verified pu
 - Data state: seeded PostgreSQL data preferred; honest unavailable state acceptable only if documenting local setup
 - Purpose: introduce product thesis and simulation disclaimer
 - Suggested caption: "PerpArena homepage with simulated competition thesis and disclaimer."
+- File: `docs/assets/screenshots/homepage-competition.png`
 
 ## Leaderboard
 
@@ -17,6 +19,7 @@ Capture screenshots only from a verified seeded local environment or verified pu
 - Data state: seeded competition with analytics, scores, integrity, and engagement recalculated
 - Purpose: show public ranking and risk-adjusted metrics
 - Suggested caption: "Synthetic leaderboard ranked by transparent competition score."
+- File: `docs/assets/screenshots/competition-leaderboard.png`
 
 ## Trader Analytics
 
@@ -25,6 +28,7 @@ Capture screenshots only from a verified seeded local environment or verified pu
 - Data state: seeded participant with closed synthetic trades
 - Purpose: show profile metrics, charts, and trade history
 - Suggested caption: "Synthetic trader profile with performance, risk, and market allocation."
+- File: `docs/assets/screenshots/trader-profile-overview.png`
 
 ## Score Breakdown
 
@@ -33,6 +37,7 @@ Capture screenshots only from a verified seeded local environment or verified pu
 - Data state: participant with persisted score breakdown
 - Purpose: show component-level scoring transparency
 - Suggested caption: "Competition score components with inputs, caps, and explanations."
+- File: `docs/assets/screenshots/score-breakdown.png`
 
 ## Integrity Status
 
@@ -41,6 +46,18 @@ Capture screenshots only from a verified seeded local environment or verified pu
 - Data state: participant with at least one active integrity heuristic flag
 - Purpose: show public-safe integrity language
 - Suggested caption: "Integrity heuristic section showing behavior requiring review."
+- File: `docs/assets/screenshots/integrity-explanation.png`
+
+## Quests and Achievements
+
+- Route: `/traders/[synthetic-wallet]`
+- Viewport: 1440 x 1000
+- Data state: participant with recalculated quest progress, streaks, and
+  achievements
+- Purpose: show non-financial engagement mechanics
+- Suggested caption: "Quest progress, streaks, and achievements for synthetic
+  engagement."
+- File: `docs/assets/screenshots/quests-achievements.png`
 
 ## Admin Configuration
 
@@ -49,6 +66,7 @@ Capture screenshots only from a verified seeded local environment or verified pu
 - Data state: any; read-only demo mode preferred
 - Purpose: show safe demonstration admin posture
 - Suggested caption: "Demonstration admin center with production-safe mutation posture."
+- File: `docs/assets/screenshots/admin-demo.png`
 
 ## Mobile Experience
 
@@ -57,6 +75,9 @@ Capture screenshots only from a verified seeded local environment or verified pu
 - Data state: seeded leaderboard
 - Purpose: show mobile navigation and compact leaderboard layout
 - Suggested caption: "Mobile competition dashboard with readable synthetic leaderboard cards."
+- Files:
+  - `docs/assets/screenshots/mobile-homepage.png`
+  - `docs/assets/screenshots/mobile-leaderboard.png`
 
 ## Architecture Diagram
 

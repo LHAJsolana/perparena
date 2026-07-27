@@ -95,14 +95,17 @@ Current E2E coverage includes:
 - about page and disclaimer
 - admin demo read-only state
 - API health and readiness smoke checks
-- trader profile unavailable-state honesty
+- seeded leaderboard search, division filtering, market filtering, integrity
+  filtering, sorting, pagination, and trader navigation when PostgreSQL is
+  configured
+- trader profile metrics, charts, score breakdown, integrity explanation,
+  quests, achievements, and trade history when PostgreSQL is configured
 - broken-route handling
 
-Full database-backed E2E coverage for leaderboard search, division filtering,
-sorting, pagination, charts, score explanations, integrity explanations, quests,
-and achievements requires a seeded PostgreSQL database.
-
 ## Accessibility QA
+
+Automated Axe checks run through Playwright for the main public routes, seeded
+competition/trader routes, and mobile navigation.
 
 Automated and manual checks should inspect:
 
@@ -188,6 +191,27 @@ When PostgreSQL is configured, also run the database-backed QA sequence above.
 - No automated contrast tooling is installed.
 - No coverage threshold is enforced because the priority is meaningful
   behavioral coverage.
+
+## Production Smoke
+
+The 2026-07-27 production smoke test verified `https://perparena.vercel.app`
+against Supabase-backed data:
+
+- `/`
+- `/competitions`
+- `/competitions/solana-perps-league-season-01`
+- one valid trader route
+- `/methodology`
+- `/integrity`
+- `/about`
+- `/admin`
+- `/api/readiness`
+- unknown route, unknown competition, and unknown trader behavior
+- leaderboard search, filters, sorting, pagination, reset, and mobile rendering
+- trader profile metrics, charts, score breakdown, integrity explanation,
+  quests, achievements, and trade history
+- security headers and absence of database connection strings in public
+  responses
 
 ## Documentation Checks
 

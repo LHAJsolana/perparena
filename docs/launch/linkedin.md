@@ -4,6 +4,8 @@ Do not publish automatically. Review deployment status and links before posting.
 
 I built PerpArena, an independent simulated trading competition and analytics prototype.
 
+Demo: https://perparena.vercel.app
+
 The product problem I wanted to explore: many competition leaderboards can over-reward raw account size, excessive leverage, artificial activity, or one lucky trade. PerpArena asks what a more risk-aware simulated leaderboard might look like.
 
 The project uses deterministic synthetic participants and trades. It does not execute real trades, custody funds, provide financial advice, or distribute rewards.

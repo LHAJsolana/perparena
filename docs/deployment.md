@@ -13,6 +13,14 @@ No `vercel.json` is required at this stage. Vercel's Next.js defaults match the
 application because PerpArena uses the standard `npm install` and
 `npm run build` flow.
 
+Verified production deployment:
+
+- project: `perparena`
+- public URL: `https://perparena.vercel.app`
+- deployment ID: `dpl_F8N4iw8WaK9Nogrg6EBB6wBj6vy7`
+- deployment commit: `90bc8e1`
+- deployed: 2026-07-27
+
 ## PostgreSQL Provider
 
 The production PostgreSQL provider is Supabase. The verified local production
@@ -61,6 +69,10 @@ Production defaults:
   must be additionally gated.
 - Set `PERPARENA_ALLOW_PRODUCTION_SEED=enabled` only for the one approved seed
   operation, then remove it.
+
+Current production configuration sets only the required variables. `DATABASE_URL`
+is encrypted in Vercel and not exposed to the client. `NEXT_PUBLIC_APP_URL` is
+`https://perparena.vercel.app`.
 
 ## Migration Strategy
 
@@ -117,7 +129,7 @@ deploying.
 
 ## Production Smoke Test
 
-After deployment, verify:
+The 2026-07-27 production smoke test passed for:
 
 - public URL uses HTTPS
 - `/` loads
@@ -141,6 +153,9 @@ After deployment, verify:
 - no browser console critical errors
 - no public response exposes secrets or database URLs
 
+Unknown competition and unknown trader routes render the designed unavailable
+state without exposing stack traces or connection details.
+
 ## Known Production Limitations
 
 - This is a portfolio prototype, not a production financial system.
@@ -148,6 +163,9 @@ After deployment, verify:
 - No distributed rate limiting is configured.
 - No production monitoring provider is configured.
 - Dependency advisories should be reviewed before public launch.
+- Remaining high-severity advisories are transitive development/toolchain
+  advisories requiring breaking ecosystem upgrades; no critical advisories
+  remain.
 - HSTS is left to the hosting platform.
 
 ## Repository Topics

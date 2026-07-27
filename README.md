@@ -4,8 +4,11 @@
 
 Independent simulated, risk-adjusted trading competition and analytics prototype.
 
-Public demo: **Not deployed yet.** Phase 15 deployment preparation is complete,
-but no production hosting platform or PostgreSQL provider has been confirmed.
+Public demo: **https://perparena.vercel.app**
+
+Deployment: Vercel production deployment
+`dpl_F8N4iw8WaK9Nogrg6EBB6wBj6vy7`, commit
+`90bc8e1`, verified on 2026-07-27.
 
 Repository status: portfolio prototype, active development, not production
 financial infrastructure.
@@ -53,8 +56,25 @@ integrity heuristics, and non-financial engagement mechanics.
 
 ## Screenshots
 
-No screenshots are committed yet. Add screenshots only after a verified public
-deployment or reproducible local screenshot capture.
+Screenshots were captured from the verified production deployment.
+
+![PerpArena homepage with simulated competition thesis and disclaimer.](docs/assets/screenshots/homepage-competition.png)
+
+![Synthetic leaderboard ranked by transparent competition score.](docs/assets/screenshots/competition-leaderboard.png)
+
+![Synthetic trader profile with performance, risk, and market allocation.](docs/assets/screenshots/trader-profile-overview.png)
+
+![Competition score components with inputs, caps, and explanations.](docs/assets/screenshots/score-breakdown.png)
+
+![Integrity heuristic section using public-safe simulation language.](docs/assets/screenshots/integrity-explanation.png)
+
+![Quest progress, streaks, and achievements for synthetic engagement.](docs/assets/screenshots/quests-achievements.png)
+
+![Demonstration admin center with production-safe mutation posture.](docs/assets/screenshots/admin-demo.png)
+
+![Mobile homepage at the verified public deployment.](docs/assets/screenshots/mobile-homepage.png)
+
+![Mobile competition dashboard with readable synthetic leaderboard controls.](docs/assets/screenshots/mobile-leaderboard.png)
 
 ## Scoring Model
 
@@ -257,16 +277,19 @@ See [docs/testing.md](docs/testing.md).
 
 ## Deployment
 
-The app is prepared for a Next.js-compatible host with PostgreSQL persistence.
-A truthful production launch still requires:
+The public demo is deployed on Vercel and backed by Supabase PostgreSQL through
+the verified Supavisor Session pooler. `NEXT_PUBLIC_APP_URL` is configured as
+`https://perparena.vercel.app`. Database credentials are server-side only.
 
-- confirmed hosting platform
-- production PostgreSQL provider
-- production `DATABASE_URL`
-- verified `NEXT_PUBLIC_APP_URL`
-- production migrations
-- approved one-time synthetic seed
-- public smoke-test verification
+Verified production state:
+
+- Vercel project: `perparena`
+- public URL: `https://perparena.vercel.app`
+- deployment ID: `dpl_F8N4iw8WaK9Nogrg6EBB6wBj6vy7`
+- deployment commit: `90bc8e1`
+- production smoke tests: passed
+- migrations: three committed Prisma migrations applied and up to date
+- synthetic data: 96 participants and 2,724 closed trades
 
 See [docs/deployment.md](docs/deployment.md).
 
@@ -278,14 +301,12 @@ See [docs/deployment.md](docs/deployment.md).
 - No full authentication system.
 - No distributed rate limiting.
 - Integrity heuristics are signals, not conclusive fraud detection.
-- Dependency audit currently reports high advisories requiring careful upgrade
-  work.
+- Remaining high-severity advisories are transitive development/toolchain
+  advisories requiring breaking ecosystem upgrades; no critical advisories
+  remain. See [docs/security.md](docs/security.md).
 
 ## Roadmap
 
-- Confirm deployment platform and PostgreSQL provider.
-- Add verified public demo link and screenshots.
-- Improve database-backed E2E coverage after production-like seed.
 - Add production observability.
 - Calibrate scoring thresholds with larger synthetic scenarios.
 - Add stronger admin authentication if the demo evolves beyond portfolio use.

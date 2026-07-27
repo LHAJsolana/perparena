@@ -107,7 +107,9 @@ The repository includes Vitest and Playwright coverage for:
 - mobile navigation
 - security hardening
 
-Database-backed E2E coverage requires a running PostgreSQL instance with seeded data.
+Database-backed E2E coverage now runs against seeded PostgreSQL data when
+`DATABASE_URL` is configured, including leaderboard filters, trader navigation,
+charts, score explanations, integrity explanations, quests, and achievements.
 
 ## Challenges
 
@@ -115,20 +117,27 @@ Database-backed E2E coverage requires a running PostgreSQL instance with seeded 
 - Keeping integrity language transparent without implying conclusive fraud detection.
 - Making synthetic data realistic enough for a portfolio demo without implying live-market data.
 - Separating calculations from UI presentation.
-- Keeping production deployment honest without a confirmed hosting/database provider.
+- Keeping production deployment honest while protecting database credentials and
+  avoiding automatic production mutations during Vercel builds.
 
 ## Tradeoffs
 
 - The scoring model is transparent and deterministic, but not fully calibrated.
 - Integrity flags are explainable, but heuristic and simulation-based.
 - The admin area is safe as a demo, but not a full production operations system.
-- Some database-backed E2E flows are limited until PostgreSQL is available in the test environment.
+- Vercel preview deployments are not granted database access by default, so the
+  public production deployment is the verified hosted demo.
 
 ## Results
 
-The repository now contains a full-stack simulated trading competition prototype with documented methodology, separated engines, normalized database schema, tested API boundaries, security hardening, and launch-ready explanatory materials.
+The repository now contains a full-stack simulated trading competition prototype
+with documented methodology, separated engines, normalized database schema,
+tested API boundaries, security hardening, production screenshots, and a
+verified public demo.
 
-No public usage metrics are claimed because no public deployment has been verified.
+Public demo: `https://perparena.vercel.app`
+
+No public usage metrics are claimed.
 
 ## Limitations
 
@@ -139,13 +148,10 @@ No public usage metrics are claimed because no public deployment has been verifi
 - No financial advice.
 - No full production authentication.
 - No distributed rate limiting.
-- Deployment remains pending platform and PostgreSQL confirmation.
+- Remaining transitive dependency advisories require breaking ecosystem upgrades.
 
 ## Roadmap
 
-- Confirm production hosting and PostgreSQL provider.
-- Deploy and verify public demo URL.
-- Capture real screenshots from a seeded environment.
 - Add stronger production authentication if admin functionality expands.
 - Add observability.
 - Continue scoring calibration with larger synthetic scenarios.

@@ -3,6 +3,8 @@
 These are draft launch assets for manual review and publishing. Nothing in this
 folder should be treated as already published.
 
+Verified public demo: `https://perparena.vercel.app`
+
 Files:
 
 - `project-summary.md`

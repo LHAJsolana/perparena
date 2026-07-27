@@ -70,12 +70,28 @@ describe("repository documentation", () => {
     }
   });
 
-  it("does not include fake screenshots or placeholder repository URLs", () => {
+  it("uses verified screenshots and avoids placeholder repository URLs", () => {
     const readme = read("README.md");
     const config = read("src/lib/config/app-config.ts");
+    const screenshotFiles = [
+      "docs/assets/screenshots/homepage-competition.png",
+      "docs/assets/screenshots/competition-leaderboard.png",
+      "docs/assets/screenshots/trader-profile-overview.png",
+      "docs/assets/screenshots/score-breakdown.png",
+      "docs/assets/screenshots/integrity-explanation.png",
+      "docs/assets/screenshots/quests-achievements.png",
+      "docs/assets/screenshots/admin-demo.png",
+      "docs/assets/screenshots/mobile-homepage.png",
+      "docs/assets/screenshots/mobile-leaderboard.png",
+    ];
 
-    expect(readme).toContain("No screenshots are committed yet");
-    expect(readme).not.toMatch(/!\[[^\]]*]\(/);
+    expect(readme).toContain(
+      "Screenshots were captured from the verified production deployment.",
+    );
+    for (const screenshot of screenshotFiles) {
+      expect(existsSync(join(root, screenshot)), screenshot).toBe(true);
+      expect(readme).toContain(screenshot);
+    }
     expect(config).not.toContain("github.com/example");
     expect(config).not.toContain("example.com/perparena");
     expect(appConfig.repositoryUrl).toBe(
