@@ -6,9 +6,8 @@ Independent simulated, risk-adjusted trading competition and analytics prototype
 
 Public demo: **https://perparena.vercel.app**
 
-Deployment: Vercel production deployment
-`dpl_F8N4iw8WaK9Nogrg6EBB6wBj6vy7`, commit
-`90bc8e1`, verified on 2026-07-27.
+Deployment: Vercel production deployment from `origin/main`, verified on
+2026-07-27.
 
 Repository status: portfolio prototype, active development, not production
 financial infrastructure.
@@ -285,8 +284,7 @@ Verified production state:
 
 - Vercel project: `perparena`
 - public URL: `https://perparena.vercel.app`
-- deployment ID: `dpl_F8N4iw8WaK9Nogrg6EBB6wBj6vy7`
-- deployment commit: `90bc8e1`
+- deployment source: `origin/main`
 - production smoke tests: passed
 - migrations: three committed Prisma migrations applied and up to date
 - synthetic data: 96 participants and 2,724 closed trades

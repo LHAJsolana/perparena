@@ -17,8 +17,7 @@ Verified production deployment:
 
 - project: `perparena`
 - public URL: `https://perparena.vercel.app`
-- deployment ID: `dpl_F8N4iw8WaK9Nogrg6EBB6wBj6vy7`
-- deployment commit: `90bc8e1`
+- deployment source: `origin/main`
 - deployed: 2026-07-27
 
 ## PostgreSQL Provider
